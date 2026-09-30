@@ -1,0 +1,6 @@
+pnpm-lock.yaml
+dist
+data
+artifacts
+test-results
+playwright-report
