@@ -1,10 +1,11 @@
+import 'dotenv/config';
 import { chromium, expect } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 // Record against a fresh, running Compose project. This creates three real demo requests.
 const baseURL = process.env.DEMO_BASE_URL || 'http://127.0.0.1:8081';
-const output = resolve('artifacts/demo');
+const output = resolve(process.env.DEMO_OUTPUT_DIR || 'artifacts/demo');
 await mkdir(output, { recursive: true });
 const config = (await fetch(`${baseURL}/api/config`).then((response) =>
   response.json(),
@@ -15,8 +16,8 @@ const context = await browser.newContext({
   recordVideo: { dir: output, size: { width: 1440, height: 1000 } },
   reducedMotion: 'reduce',
 });
-const page = await context.newPage();
 const startedAt = Date.now();
+const page = await context.newPage();
 const captions: { start: number; text: string }[] = [];
 const caption = (text: string) => {
   captions.push({ start: (Date.now() - startedAt) / 1000, text });
@@ -97,7 +98,11 @@ try {
   await page.getByRole('button', { name: 'Support desk', exact: true }).click();
   await page
     .getByLabel('Support access key')
-    .fill(process.env.DEMO_SUPPORT_TOKEN || 'demo-support-key');
+    .fill(
+      process.env.DEMO_SUPPORT_TOKEN ||
+        process.env.SUPPORT_TOKEN ||
+        'demo-support-key',
+    );
   await page.getByRole('button', { name: 'Open support desk' }).click();
   await expect(
     page.getByRole('row').filter({ hasText: 'ORD-1003' }),

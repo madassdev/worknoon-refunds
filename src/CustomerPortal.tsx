@@ -221,7 +221,7 @@ export function CustomerPortal({
             <label htmlFor="reason">What’s the reason?</label>
             <select
               id="reason"
-              value={reason}
+              value={existing?.selectedReason ?? reason}
               onChange={(event) => {
                 setReason(event.target.value as Reason);
                 setResult(null);
@@ -237,7 +237,7 @@ export function CustomerPortal({
             <label htmlFor="message">Tell us a little more</label>
             <textarea
               id="message"
-              value={message}
+              value={existing?.message ?? message}
               onChange={(event) => setMessage(event.target.value)}
               minLength={12}
               maxLength={2000}
@@ -247,7 +247,7 @@ export function CustomerPortal({
             />
             <div className="input-help">
               <span>Please include at least 12 characters.</span>
-              <span>{message.length}/2,000</span>
+              <span>{(existing?.message ?? message).length}/2,000</span>
             </div>
             <div className="refund-total">
               <span>Requested refund</span>

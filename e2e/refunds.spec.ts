@@ -44,6 +44,10 @@ test('customer approval, final-sale denial, support review and persistent histor
       )
       .first(),
   ).toBeVisible();
+  await page.getByRole('button', { name: /ORD-1001/ }).click();
+  await expect(page.getByLabel('Tell us a little more')).toHaveValue(
+    'My ceramic mug arrived cracked along the handle.',
+  );
   await page.getByLabel('DEMO CUSTOMER').selectOption('customer-2');
   await expect(page.getByRole('button', { name: /ORD-1003/ })).toBeVisible();
   await page
